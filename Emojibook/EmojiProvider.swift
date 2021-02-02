@@ -9,6 +9,13 @@ import Foundation
 
 public struct EmojiProvider {
     
+    static func random() -> EmojiDetails {
+        let all = EmojiProvider.all()
+        
+        let randomIndex = Int.random(in: 0..<all.count)
+        return all[randomIndex]
+    }
+    
     static func all() -> [EmojiDetails] {
         [
             .init(
