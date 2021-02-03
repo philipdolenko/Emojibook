@@ -11,22 +11,19 @@ struct EmojibookListView: View {
     
     let emojiData = EmojiProvider.all()
     
-    @State private var showingDetail: Bool = false
+    @State private var visibleEmojiDetails: EmojiDetails?
     
     var body: some View {
         NavigationView {
             List {
                 ForEach(emojiData, content: { emojiDetails in
                     Button(action: {
-                        showingDetail.toggle()
+                        visibleEmojiDetails = emojiDetails
                     }, label: {
                         EmojiItemView(
                             emoji: emojiDetails.emoji,
                             emojiName: emojiDetails.name
                         )
-                    })
-                    .sheet(isPresented: $showingDetail, content: {
-                        EmojiDetailsView(emojiDetails: emojiDetails)
                     })
                 })
             }
@@ -34,11 +31,22 @@ struct EmojibookListView: View {
             .listStyle(InsetGroupedListStyle())
             .navigationBarTitle("Emojibook")
         }
+        .onOpenURL { url in
+            guard let emojiDetails = emojiData.first(where: {$0.url == url}) else { return }
+            visibleEmojiDetails = emojiDetails
+        }
+        .sheet(item: $visibleEmojiDetails) { emojiDetails in
+            EmojiDetailsView(emojiDetails: emojiDetails)
+        }
     }
 }
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        EmojibookListView()
+        Group {
+            EmojibookListView()
+            EmojibookListView()
+                .preferredColorScheme(.dark)
+        }
     }
 }

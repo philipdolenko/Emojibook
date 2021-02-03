@@ -9,6 +9,8 @@ import SwiftUI
 
 struct EmojiItemView: View {
     
+    @Environment(\.colorScheme) var colorScheme
+    
     let emoji: String
     let emojiName: String
     
@@ -16,5 +18,6 @@ struct EmojiItemView: View {
         Text("\(emoji) - \(emojiName)")
             .font(.largeTitle)
             .padding([.top, .bottom])
+            .foregroundColor(colorScheme == .dark ? .white : .black)
     }
 }
